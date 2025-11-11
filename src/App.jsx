@@ -104,7 +104,7 @@
 
 
 import React, { useState } from "react";
-import "./Calendar.css"; 
+import "./calendar.css"; 
 function Calendar() {
   const [year, setYear] = useState(new Date().getFullYear());
   const [selected, setSelected] = useState({ month: null, day: null });
