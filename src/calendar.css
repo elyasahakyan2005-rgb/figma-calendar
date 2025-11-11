@@ -3,9 +3,10 @@
     text-align: center;
     padding: 20px;
     font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    background-color: #FFF8F0; /* off-white background */
+    background-color: #FFF8F0; 
     color: #3E2723; /* dark brown text */
     min-height: 100vh;
+    width: 100%;
   }
   
   /* === Header === */
@@ -108,7 +109,7 @@
     font-weight: bold;
   }
   
-  /* Selected day highlight */
+
   .days-grid .selected {
     background-color: #A47150; /* lighter brown */
     color: #FFF8F0; /* off-white text */

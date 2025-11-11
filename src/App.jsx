@@ -104,8 +104,7 @@
 
 
 import React, { useState } from "react";
-import "./Calendar.css"; // Import the brown-themed CSS
-
+import "./Calendar.css"; 
 function Calendar() {
   const [year, setYear] = useState(new Date().getFullYear());
   const [selected, setSelected] = useState({ month: null, day: null });
@@ -132,7 +131,13 @@ function Calendar() {
   const handleNextYear = () => setYear(year + 1);
 
   return (
+
     <div className="calendar-container">
+      <div className="global-page">
+        <h1>Hello, Aqeel , Start planning today</h1>
+      </div>
+    
+      
       <h1 data-testid="calendar-title">Calendar {year}</h1>
 
       <div className="year-buttons">
@@ -193,6 +198,7 @@ function Calendar() {
         </p>
       )}
     </div>
+
   );
 }
 
