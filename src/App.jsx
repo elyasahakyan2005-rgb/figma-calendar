@@ -121,24 +121,98 @@ function Calendar() {
 
   const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-  const getDaysInMonth = (monthIndex, year) => {
-    return new Date(year, monthIndex + 1, 0).getDate();
-  };
-
-  const getFirstDayOfMonth = (monthIndex, year) => {
-    return new Date(year, monthIndex, 1).getDay(); 
-  };
+  const getDaysInMonth = (monthIndex, year) => new Date(year, monthIndex + 1, 0).getDate();
+  const getFirstDayOfMonth = (monthIndex, year) => new Date(year, monthIndex, 1).getDay();
 
   const handlePrevYear = () => setYear(year - 1);
   const handleNextYear = () => setYear(year + 1);
 
+  const colors = {
+    brown: "#8B5E3C",
+    lightBrown: "#D2B48C",
+    offWhite: "#FFF8F0",
+    lighterBrown: "#A47150",
+    hoverLight: "#F5DEB3",
+    textDark: "#3E2723",
+  };
+
+  const containerStyle = {
+    textAlign: "center",
+    padding: "20px",
+    fontFamily: "Segoe UI, Roboto, Helvetica, Arial, sans-serif",
+    backgroundColor: colors.offWhite,
+    color: colors.textDark,
+    minHeight: "100vh",
+  };
+
+  const buttonStyle = {
+    backgroundColor: colors.brown,
+    color: colors.offWhite,
+    border: "none",
+    padding: "8px 16px",
+    borderRadius: "6px",
+    cursor: "pointer",
+    fontWeight: 500,
+    marginLeft: "10px",
+  };
+
+  const monthBoxStyle = {
+    border: `1px solid ${colors.lightBrown}`,
+    borderRadius: "10px",
+    padding: "10px",
+    backgroundColor: colors.offWhite,
+    boxShadow: `0 2px 6px rgba(139, 94, 60, 0.3)`,
+  };
+
+  const weekdayHeaderStyle = {
+    display: "grid",
+    gridTemplateColumns: "repeat(7, 1fr)",
+    fontWeight: "bold",
+    marginBottom: "5px",
+    backgroundColor: colors.lightBrown,
+    borderRadius: "5px",
+    padding: "5px 0",
+    color: colors.textDark,
+  };
+
+  const daysGridStyle = {
+    display: "grid",
+    gridTemplateColumns: "repeat(7, 1fr)",
+    gap: "5px",
+  };
+
+  const dayCellStyle = (isToday, isSelected) => ({
+    padding: "8px",
+    border: `1px solid ${colors.lightBrown}`,
+    borderRadius: "4px",
+    cursor: "pointer",
+    transition: "all 0.2s ease",
+    backgroundColor: isToday
+      ? colors.brown
+      : isSelected
+      ? colors.lighterBrown
+      : colors.offWhite,
+    color: isToday || isSelected ? colors.offWhite : colors.textDark,
+    fontWeight: isToday ? "bold" : "normal",
+  });
+
+  const dayHoverStyle = {
+    backgroundColor: colors.hoverLight,
+  };
+
   return (
-    <div style={{ textAlign: "center", padding: "20px" }}>
-      <h1 data-testid="calendar-title">Calendar {year}</h1>
+    <div style={containerStyle}>
+      <h1 data-testid="calendar-title" style={{ color: colors.brown }}>
+        Calendar {year}
+      </h1>
 
       <div style={{ marginBottom: "20px" }}>
-        <button onClick={handlePrevYear} data-testid="prev-year">Previous Year</button>
-        <button onClick={handleNextYear} style={{ marginLeft: "10px" }} data-testid="next-year">Next Year</button>
+        <button onClick={handlePrevYear} style={buttonStyle} data-testid="prev-year">
+          Previous Year
+        </button>
+        <button onClick={handleNextYear} style={buttonStyle} data-testid="next-year">
+          Next Year
+        </button>
       </div>
 
       <div
@@ -156,70 +230,35 @@ function Calendar() {
           const emptySlots = Array.from({ length: firstDay });
 
           return (
-            <div
-              key={month}
-              data-testid={`month-${month}`}
-              style={{
-                border: "1px solid #ccc",
-                borderRadius: "10px",
-                padding: "10px",
-              }}
-            >
-              <h2>{month}</h2>
+            <div key={month} data-testid={`month-${month}`} style={monthBoxStyle}>
+              <h2 style={{ color: colors.brown }}>{month}</h2>
 
-              <div
-                className="weekday-header"
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(7, 1fr)",
-                  fontWeight: "bold",
-                  marginBottom: "5px",
-                }}
-              >
+              <div style={weekdayHeaderStyle}>
                 {weekDays.map((day) => (
                   <div key={day}>{day}</div>
                 ))}
               </div>
 
-             
-              <div
-                className="days-grid"
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(7, 1fr)",
-                  gap: "5px",
-                }}
-              >
+              <div style={daysGridStyle}>
                 {emptySlots.map((_, i) => (
                   <div key={`empty-${i}`}></div>
                 ))}
 
                 {days.map((day) => {
-                  const isToday =
-                    day === todayDay &&
-                    monthIndex === todayMonth &&
-                    year === todayYear;
+                  const isToday = day === todayDay && monthIndex === todayMonth && year === todayYear;
+                  const isSelected = selected.month === month && selected.day === day;
 
                   return (
                     <div
                       key={day}
                       data-testid={`day-${month}-${day}`}
                       onClick={() => setSelected({ month, day })}
-                      style={{
-                        padding: "8px",
-                        border: "1px solid #eee",
-                        cursor: "pointer",
-                        backgroundColor: isToday
-                          ? "#1976d2"
-                          : selected.month === month && selected.day === day
-                          ? "#4caf50"
-                          : "white",
-                        color:
-                          isToday || (selected.month === month && selected.day === day)
-                            ? "white"
-                            : "black",
-                        borderRadius: "4px",
-                        fontWeight: isToday ? "bold" : "normal",
+                      style={dayCellStyle(isToday, isSelected)}
+                      onMouseEnter={(e) => {
+                        if (!isToday && !isSelected) e.target.style.backgroundColor = colors.hoverLight;
+                      }}
+                      onMouseLeave={(e) => {
+                        if (!isToday && !isSelected) e.target.style.backgroundColor = colors.offWhite;
                       }}
                     >
                       {day}
@@ -233,7 +272,7 @@ function Calendar() {
       </div>
 
       {selected.month && (
-        <p data-testid="selected-date" style={{ marginTop: "20px" }}>
+        <p style={{ marginTop: "20px", fontSize: "1.1rem", fontWeight: "500", color: colors.brown }} data-testid="selected-date">
           Selected date: {selected.day} {selected.month} {year}
         </p>
       )}
